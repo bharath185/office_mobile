@@ -23,7 +23,6 @@ dependencies:
   # Device Hardware & Biometrics
   local_auth: ^2.1.8
   geolocator: ^14.0.2
-  geocoding: ^5.0.0
   camera: ^0.10.5+9
   image_picker: ^1.0.7
   # UI, Icons, Typography & Utilities
