@@ -1,0 +1,12 @@
+# Flutter plugins and JNI/Pigeon bridges
+-keep class io.flutter.app.** { *; }
+-keep class io.flutter.plugin.** { *; }
+-keep class io.flutter.util.** { *; }
+-keep class io.flutter.view.** { *; }
+-keep class io.flutter.** { *; }
+-keep class io.flutter.plugins.** { *; }
+-keep class dev.flutter.** { *; }
+-keep class androidx.biometric.** { *; }
+-keep class kotlin.coroutines.** { *; }
+-keepattributes *Annotation*
+-dontwarn io.flutter.plugins.**

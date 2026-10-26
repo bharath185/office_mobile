@@ -1,0 +1,51 @@
+name: Build iOS App
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-ios:
+    name: Build Flutter iOS Application
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies & CocoaPods
+        run: |
+          flutter pub get
+          cd ios
+          pod install --repo-update
+          cd ..
+
+      - name: Build iOS App (Release Unsigned)
+        run: flutter build ios --release --no-codesign
+
+      - name: Package App as IPA and ZIP
+        run: |
+          cd build/ios/iphoneos
+          # Create Runner.app zip
+          zip -r -y Runner.app.zip Runner.app
+          # Create standard IPA package
+          mkdir Payload
+          cp -r Runner.app Payload/
+          zip -r -y OfficeConnect.ipa Payload
+          cd ../../..
+
+      - name: Upload iOS IPA & App Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OfficeConnect-iOS-Build
+          path: |
+            build/ios/iphoneos/OfficeConnect.ipa
+            build/ios/iphoneos/Runner.app.zip
+          retention-days: 14
