@@ -1,4 +1,4 @@
-name: Build iOS App
+name: Build iOS and macOS Apps
 
 on:
   workflow_dispatch:
@@ -6,8 +6,8 @@ on:
     branches: [ main, master ]
 
 jobs:
-  build-ios:
-    name: Build Flutter iOS Application
+  build-apple:
+    name: Build iOS & macOS Packages
     runs-on: macos-14
 
     steps:
@@ -20,31 +20,43 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Prepare Flutter Engine & Dependencies
+      - name: Prepare Dependencies
         run: |
           flutter config --no-enable-swift-package-manager
-          flutter precache --ios
+          flutter precache --ios --macos
           flutter pub get
 
-      - name: Build iOS App (Release Unsigned)
-        run: flutter build ios --release --no-codesign
-
-      - name: Package App as IPA and ZIP
+      - name: Build iOS Simulator App (For Mac iOS Simulator)
         run: |
+          flutter build ios --simulator
+          cd build/ios/iphonesimulator
+          zip -r -y Runner-Simulator.app.zip Runner.app
+          cd ../../..
+
+      - name: Build iOS Device App (Unsigned IPA)
+        run: |
+          flutter build ios --release --no-codesign
           cd build/ios/iphoneos
-          # Create Runner.app zip
-          zip -r -y Runner.app.zip Runner.app
-          # Create standard IPA package
+          zip -r -y Runner-Device.app.zip Runner.app
           mkdir Payload
           cp -r Runner.app Payload/
           zip -r -y OfficeConnect.ipa Payload
           cd ../../..
 
-      - name: Upload iOS IPA & App Artifacts
+      - name: Build Native macOS Desktop App (Double-Click on Mac)
+        run: |
+          flutter build macos --release
+          cd build/macos/Build/Products/Release
+          zip -r -y OfficeConnect-macOS.zip office_mobile.app
+          cd ../../../../..
+
+      - name: Upload Finished Builds
         uses: actions/upload-artifact@v4
         with:
-          name: OfficeConnect-iOS-Build
+          name: OfficeConnect-Apple-Builds
           path: |
+            build/ios/iphonesimulator/Runner-Simulator.app.zip
+            build/macos/Build/Products/Release/OfficeConnect-macOS.zip
             build/ios/iphoneos/OfficeConnect.ipa
-            build/ios/iphoneos/Runner.app.zip
+            build/ios/iphoneos/Runner-Device.app.zip
           retention-days: 14
