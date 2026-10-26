@@ -10,9 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # State Management
-  flutter_bloc: ^8.1.3
-
   # Networking & HTTP
   dio: ^5.4.1
 
@@ -23,21 +20,12 @@ dependencies:
   # Device Hardware & Biometrics
   local_auth: ^2.1.8
   geolocator: ^14.0.2
-  camera: ^0.10.5+9
-  image_picker: ^1.0.7
+
   # UI, Icons, Typography & Utilities
   cupertino_icons: ^1.0.6
-  google_fonts: ^6.1.0
   intl: ^0.19.0
-  flutter_svg: ^2.0.9
-  cached_network_image: ^3.3.1
   url_launcher: ^6.2.5
   qr_flutter: ^4.1.0
-
-  # PDF Documents & File Handlers
-  flutter_pdfview: ^1.4.5
-  path_provider: ^2.1.2
-  open_filex: ^4.4.0
 
 dev_dependencies:
   flutter_test:
